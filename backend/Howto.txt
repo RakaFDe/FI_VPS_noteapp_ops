@@ -1,0 +1,10 @@
+1. clone repo GitOps
+git clone https://github.com/username/finote-deploy.git
+cd finote-deploy
+
+2. buat env
+cp .env.example .env
+nano .env
+
+3.deploy
+docker compose up -d --build
