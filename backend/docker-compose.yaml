@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   # ==========================
@@ -10,20 +8,17 @@ services:
     container_name: finote-postgres
 
     environment:
-      POSTGRES_DB: finote
-      POSTGRES_USER: finote_user
-      POSTGRES_PASSWORD: finote_password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
     volumes:
       - finote_pgdata:/var/lib/postgresql/data
 
-    networks:
-      - finote-net
-
     restart: unless-stopped
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U finote_user -d finote"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -33,19 +28,16 @@ services:
   # Database Migration
   # ==========================
   migrate:
-    build:
-      context: .
-      dockerfile: Dockerfile.migrate
+    profiles: ["migration"]
+    image: ${BACKEND_IMAGE}
+    command: ["npx", "drizzle-kit", "migrate"]
 
     depends_on:
       postgres:
         condition: service_healthy
 
-    environment:
-      DATABASE_URL: postgresql://finote_user:finote_password@postgres:5432/finote
-
-    networks:
-      - finote-net
+    env_file:
+      - .env
 
     restart: "no"
 
@@ -54,39 +46,21 @@ services:
   # Backend Application
   # ==========================
   backend:
-    image: ghcr.io/rakafde/fi_vps_noteapp_be/finote-backend:1.0.0-dev-a46202f
+    image: ${BACKEND_IMAGE}
     container_name: finote-backend-prod
 
     depends_on:
-      migrate:
-        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
 
     ports:
       - "3000:3000"
 
-    environment:
-      NODE_ENV: production
-      PORT: 3000
-      SESSION_SECRET: super-secret-production
-      SESSION_NAME: finote.sid
-      CORS_ORIGIN: https://finote.rakafitrap.com
-      DATABASE_URL: postgresql://finote_user:finote_password@postgres:5432/finote
-
-    networks:
-      - finote-net
+    env_file:
+      - .env
 
     restart: unless-stopped
 
 
-# ==========================
-# Network
-# ==========================
-networks:
-  finote-net:
-
-
-# ==========================
-# Volume
-# ==========================
 volumes:
   finote_pgdata:
