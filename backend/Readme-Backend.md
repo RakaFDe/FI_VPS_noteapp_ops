@@ -197,3 +197,15 @@ docker compose logs -f
 * File `.env` tidak disimpan di repository.
 * `.env` harus dibuat manual pada VPS.
 * Environment variable berisi konfigurasi production dan kredensial database.
+
+
+---
+
+# Flow
+
+Flow
+
+git pull
+docker compose pull
+docker compose --profile migration up migrate
+docker compose up -d

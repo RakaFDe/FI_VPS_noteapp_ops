@@ -30,7 +30,7 @@ services:
   migrate:
     profiles: ["migration"]
     image: ${BACKEND_IMAGE}
-    command: ["npx", "drizzle-kit", "migrate"]
+    command: ["npx", "drizzle-kit", "migrate", "--config=drizzle.config.ts"]
 
     depends_on:
       postgres:

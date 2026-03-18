@@ -7,4 +7,36 @@ cp .env.example .env
 nano .env
 
 3.deploy
-docker compose up -d --build
+docker compose pull
+docker compose --profile migration up migrate
+docker compose up -d
+
+
+error/kendala
+===========
+
+Cara lihat detail error migration
+docker compose logs migrate
+
+cek postgres
+docker compose ps
+cek apakah running (healthy) / docker compose logs postgres
+
+cek log compose
+docker compose logs -f
+
+
+Jika salah satu step gagal (recovery guide)
+============
+
+Migration gagal
+Perbaiki error → ulangi:
+docker compose --profile migration up migrate
+
+Backend gagal start
+Fix issue → restart:
+docker compose restart backend
+
+Reset semua service (safe reset)
+docker compose down
+docker compose up -d
