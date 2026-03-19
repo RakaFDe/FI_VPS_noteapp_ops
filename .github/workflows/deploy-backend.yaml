@@ -6,7 +6,7 @@ on:
       - 'backend/**'
 
 jobs:
-  deploy-backend:
+  deploy-backend-ssh:
     runs-on: ubuntu-latest
 
     steps:
