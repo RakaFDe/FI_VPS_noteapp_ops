@@ -18,4 +18,4 @@ docker compose up -d --remove-orphans
 echo "Clean unused images / Prune image"
 docker image prune -f
 
-echo "Deploy finished *"
+echo "* Deploy finished *"
