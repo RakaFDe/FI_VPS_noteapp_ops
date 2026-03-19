@@ -3,8 +3,12 @@ set -e
 
 cd "$(dirname "$0")"
 
-echo "Pull repo ops terbaru"
-git pull
+echo "Sync repo ops terbaru"
+git fetch origin
+git reset --hard origin/main
+
+#echo "Pull repo ops terbaru"
+#git pull
 
 echo "Pull images"
 docker compose pull
