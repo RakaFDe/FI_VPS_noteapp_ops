@@ -8,11 +8,7 @@ on:
 jobs:
   deploy-backend-ssh:
     runs-on: ubuntu-latest
-
-    env:
-      GHCR_USER: rakafde
-      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-
+    
     steps:
       - name: SSH Deploy Backend
         uses: appleboy/ssh-action@v1.0.0
@@ -24,6 +20,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
+          envs: GHCR_USER,GHCR_TOKEN
           script: |
             cd ~/finote/ops/backend
             ./deploy_be.sh
