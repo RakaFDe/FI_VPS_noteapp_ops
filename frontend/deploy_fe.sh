@@ -18,7 +18,7 @@ echo "Pull latest image"
 docker compose pull
 
 echo "Restart frontend"
-docker compose up -d --remove-orphans
+docker compose up -d --remove-orphans --force-recreate
 
 echo "Clean unused images"
 docker image prune -f
