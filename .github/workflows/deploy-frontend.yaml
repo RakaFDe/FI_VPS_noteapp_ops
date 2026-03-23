@@ -9,18 +9,18 @@ jobs:
   deploy-frontend-ssh:
     runs-on: ubuntu-latest
 
-    env:
-      GHCR_USER: rakafde
-      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-
     steps:
       - name: SSH Deploy Frontend
         uses: appleboy/ssh-action@v1.0.0
+        env:
+          GHCR_USER: rakafde
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
+          envs: GHCR_USER,GHCR_TOKEN
           script: |
             cd ~/finote/ops/frontend
             chmod +x deploy_fe.sh
