@@ -17,6 +17,9 @@ export $(grep -v '^#' image.env | xargs)
 echo "Pull latest image"
 docker compose pull
 
+echo "Stop old container"
+docker compose down --remove-orphans
+
 echo "Restart frontend"
 docker compose up -d --remove-orphans --force-recreate
 
