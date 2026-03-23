@@ -1,7 +1,7 @@
 services:
   frontend:
     image: ${FRONTEND_IMAGE}
-    container_name: finote-frontend-prod
+    #container_name: finote-frontend-prod
 
     ports:
       - "8082:8080"
