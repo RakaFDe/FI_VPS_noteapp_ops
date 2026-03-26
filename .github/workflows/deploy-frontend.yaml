@@ -24,5 +24,7 @@ jobs:
           envs: GHCR_USER,GHCR_TOKEN
           script: |
             cd ~/finote/ops
+            git fetch --all
+          git reset --hard origin/main
             chmod +x scripts/deploy_fe_k8s.sh
             ./scripts/deploy_fe_k8s.sh
