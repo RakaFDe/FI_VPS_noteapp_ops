@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'frontend/**'
-      - 'scripts/deploy_fe_k8s.sh'
 
 jobs:
   deploy-frontend-ssh:
@@ -23,6 +22,6 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           envs: GHCR_USER,GHCR_TOKEN
           script: |
-            cd ~/finote/ops
-            chmod +x scripts/deploy_fe_k8s.sh
-            ./scripts/deploy_fe_k8s.sh
+            cd ~/finote/ops/frontend
+            chmod +x deploy_fe.sh
+            ./deploy_fe.sh

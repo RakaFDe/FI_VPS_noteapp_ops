@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finote-frontend
+  labels:
+    app: finote-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: finote-frontend
+  template:
+    metadata:
+      labels:
+        app: finote-frontend
+    spec:
+      containers:
+        - name: finote-frontend
+          image: ${FRONTEND_IMAGE}
+          ports:
+            - containerPort: 8080
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
