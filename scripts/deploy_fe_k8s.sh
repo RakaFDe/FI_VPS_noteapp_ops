@@ -5,9 +5,6 @@ set -e
 echo "Move to repo root"
 cd "$(dirname "$0")/.."
 
-#echo "Login to GHCR"
-#echo $GHCR_TOKEN | docker login ghcr.io -u $GHCR_USER --password-stdin
-
 echo "Sync repo ops terbaru"
 git fetch origin
 git reset --hard origin/main
