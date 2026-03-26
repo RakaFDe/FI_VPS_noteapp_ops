@@ -25,4 +25,4 @@ kubectl apply -f frontend/k8s/frontend-service.yaml
 echo "Wait rollout deployment"
 kubectl kubectl rollout status deployment/finote-frontend
 
-echo "Frontend deployed via Kubernetes success"
+echo "Frontend deployed via Kubernetes success !"
