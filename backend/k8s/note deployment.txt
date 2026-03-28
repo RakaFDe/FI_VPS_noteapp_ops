@@ -1,0 +1,25 @@
+urutan apply postgres
+
+kubectl apply -f postgres-secret.yaml
+kubectl apply -f postgres-service.yaml
+kubectl apply -f postgres-statefulset.yaml
+
+coba verifikasi
+kubectl get pods
+kubectl get pvc
+kubectl logs finote-postgres-0
+
+test koneksi dari dalam cluster
+kubectl run test-pg --rm -it --image=postgres:16 -- bash
+psql -h postgres -U finote_user -d finote
+
+=======
+
+1️ Deploy PostgreSQL (infra layer)
+2️ Deploy Migration Job (ops layer)
+3 Deploy Backend App (application layer)
+
+scripts/
+├── deploy_postgres_k8s.sh
+├── deploy_migration_k8s.sh
+└── deploy_backend_k8s.sh
