@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: finote-migrate
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: ${BACKEND_IMAGE}
+          command: ["npx", "drizzle-kit", "migrate", "--config=drizzle.config.ts"]
+
+          env:
+            - name: DATABASE_URL
+              value: postgresql://finote_user:finote_password@postgres:5432/finote
+
+            - name: NODE_ENV
+              value: production
