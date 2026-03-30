@@ -1,0 +1,80 @@
+setelah apply manifest postgres
+
+kubectl apply -f postgres-secret.yaml
+kubectl apply -f postgres-service.yaml
+kubectl apply -f postgres-statefulset.yaml
+
+berikut hal yang di test selanjutnya
+
+cek resource : 
+kubectl get pods
+kubectl get pvc
+kubectl get svc
+
+
+tes koneksi dari dalam cluster
+kubectl run pg-test --rm -it --image=postgres:16 -- bash
+
+dan coba masuk (password ada disettingan secret)
+psql -h postgres -U finote_user -d finote
+
+kalau sukses akan muncul promt
+finote=#
+
+Itu berarti: DNS service bekerja, auth bekerja ,database tersedia ,siap dipakai backend
+
+
+Test query sederhana
+\l
+apakah muncul database finote
+
+atau
+
+SELECT 1;
+expected output 
+ ?column?
+----------
+        1
+		
+		
+dan cpba Verifikasi dari DNS Kubernetes
+
+kubectl exec -it finote-postgres-0 -- printenv | grep POSTGRES
+
+seharusnya muncul data config/env
+POSTGRES_DB=finote
+POSTGRES_USER=finote_user
+
+Test dari aplikasi lain (opsional)
+kubectl run dns-test --rm -it --image=busybox -- sh
+dan coba jalankan : nslookup postgres
+biasanya akan muncul resolve address
+
+
+================================
+
+Job Migrate
+
+
+setelah buat job migrate
+
+bisa di tes langsung pada server dengan 
+
+export $(grep -v '^#' backend/image.env | xargs)
+envsubst < backend/k8s/postgres-migrate-job.yaml | kubectl apply -f -
+
+dan tunggu beberapa saat lalu jalankan : 
+kubectl logs job/finote-migrate -f
+
+akan muncul step seperti :
+
+Reading config file '/app/drizzle.config.ts'
+Using 'pg' driver for database querying
+npm notice
+npm notice New major version of npm available! 10.9.4 -> 11.12.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.1
+npm notice To update run: npm install -g npm@11.12.1
+npm notice
+[✓] migrations applied successfully!
+
+jika salah boleh di pastikan kembali isian file migrate, pod , dan image.env

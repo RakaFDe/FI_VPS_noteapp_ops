@@ -1,0 +1,168 @@
+PostgreSQL (stateful)
+
+Compose:
+
+volume → finote_pgdata
+env → POSTGRES_*
+healthcheck
+
+Kubernetes:
+
+StatefulSet atau Deployment (lebih baik StatefulSet)
+PersistentVolume + PersistentVolumeClaim
+Service (ClusterIP)
+Secret untuk credential
+optional: ConfigMap
+
+
+---
+
+Backend App
+
+Compose:
+
+image dari pipeline
+env dari .env
+depends_on postgres
+
+Kubernetes:
+
+Deployment
+Service
+ConfigMap + Secret
+tidak ada depends_on → diganti dengan retry logic di app
+
+
+---
+
+Migration Job
+
+Compose:
+
+migrate:
+  command: drizzle-kit migrate
+
+Kubernetes:
+
+gunakan Job (bukan Deployment)
+dijalankan sekali setelah postgres ready
+
+---
+
+Urutan ideal:
+
+Secret (DB credential)
+ConfigMap (config non-sensitive)
+PV
+PVC
+PostgreSQL StatefulSet
+PostgreSQL Service
+Migration Job
+Backend Deployment
+Backend Service
+Backend Ingress (optional)
+
+
+---
+
+Secret  / Configmap
+di .env kamu ada:
+
+POSTGRES_PASSWORD=finote_password
+SESSION_SECRET=super-secret-production
+
+Ini sensitive, jangan taruh di ConfigMap.
+
+Split seperti ini:
+
+Secret
+POSTGRES_USER
+POSTGRES_PASSWORD
+SESSION_SECRET
+ConfigMap
+NODE_ENV
+PORT
+CORS_ORIGIN
+POSTGRES_DB
+
+
+---
+
+| Compose          | Kubernetes             |
+| ---------------- | ---------------------- |
+| postgres service | StatefulSet            |
+| volume           | PV + PVC               |
+| env postgres     | Secret                 |
+| backend          | Deployment             |
+| migrate          | Job                    |
+| depends_on       | retry / readinessProbe |
+| env_file         | ConfigMap + Secret     |
+
+
+k8s/
+ ├── postgres/
+ │    ├── postgres-secret.yaml
+ │    ├── postgres-configmap.yaml
+ │    ├── postgres-pv.yaml
+ │    ├── postgres-pvc.yaml
+ │    ├── postgres-statefulset.yaml
+ │    └── postgres-service.yaml
+ │
+ ├── backend/
+ │    ├── backend-configmap.yaml
+ │    ├── backend-secret.yaml
+ │    ├── backend-deployment.yaml
+ │    ├── backend-service.yaml
+ │    └── backend-migrate-job.yaml
+ 
+ 
+ =======================
+ 
+ Cara Backup PostgreSQL Saat Ini (Docker Compose)
+ 
+*Backup dari container
+ 
+docker exec -t finote-postgres \
+pg_dump -U finote_user -d finote \
+> finote_backup.sql
+
+terbentuk : finote_backup.sql
+
+*backup all databse 
+
+docker exec -t finote-postgres \
+pg_dumpall -U finote_user \
+> finote_full_backup.sql
+
+*Copy dari container (optional method)
+
+docker exec finote-postgres \
+pg_dump -U finote_user finote \
+> backup.sql
+
+
+---
+
+Restore ke Kubernetes
+
+Jika sudah deploy PostgreSQL di K8s:
+kubectl exec -i postgres-0 -- \
+psql -U finote_user -d finote < finote_backup.sql
+
+atau jika pakai service
+kubectl port-forward svc/postgres 5432:5432
+psql -h localhost -U finote_user -d finote < finote_backup.sql
+
+
+Urutan aman:
+
+backup DB dari compose
+deploy postgres di k8s
+restore backup
+jalankan migration job (opsional)
+deploy backend
+test koneksi
+update frontend ingress ke backend baru
+
+
+=======================
