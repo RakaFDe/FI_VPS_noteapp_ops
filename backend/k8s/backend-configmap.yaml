@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: finote-backend-config
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  SESSION_NAME: "finote.sid"
+  CORS_ORIGIN: "https://finote.rakafitrap.com"
+  POSTGRES_DB: "finote"
+  POSTGRES_USER: "finote_user"

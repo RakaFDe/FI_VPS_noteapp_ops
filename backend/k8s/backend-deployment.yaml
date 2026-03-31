@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finote-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: finote-backend
+  template:
+    metadata:
+      labels:
+        app: finote-backend
+    spec:
+      containers:
+        - name: backend
+          image: ${BACKEND_IMAGE}
+          ports:
+            - containerPort: 3000
+
+          envFrom:
+            - configMapRef:
+                name: finote-backend-config
+            - secretRef:
+                name: finote-backend-secret
+
+          env:
+            - name: DATABASE_URL
+              value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
