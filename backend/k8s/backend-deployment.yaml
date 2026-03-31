@@ -22,11 +22,11 @@ spec:
             - configMapRef:
                 name: finote-backend-config
             - secretRef:
-                name: finote-backend-secret
+                name: finote-postgres-secret
 
           env:
             - name: DATABASE_URL
-              value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)
+              value: postgresql://finote_user:finote_password@postgres:5432/finote
 
           livenessProbe:
             httpGet:
@@ -34,6 +34,8 @@ spec:
               port: 3000
             initialDelaySeconds: 15
             periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
 
           readinessProbe:
             httpGet:
@@ -41,3 +43,5 @@ spec:
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
