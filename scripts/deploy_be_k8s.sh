@@ -25,7 +25,7 @@ kubectl apply -f backend/k8s/postgres-service.yaml
 kubectl apply -f backend/k8s/postgres-statefulset.yaml
 
 echo "Wait Postgres ready"
-kubectl rollout status statefulset/postgres --timeout=120s || true
+kubectl rollout status statefulset/finote-postgres --timeout=120s || true
 
 echo "Run migration job"
 envsubst < backend/k8s/postgres-migrate-job.yaml | kubectl apply -f -
