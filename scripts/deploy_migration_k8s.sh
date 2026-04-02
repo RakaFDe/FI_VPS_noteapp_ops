@@ -11,6 +11,9 @@ git reset --hard origin/main
 echo "Load backend image"
 export $(grep -v '^#' backend/image.env | xargs)
 
+echo "clean up older migration"
+kubectl delete job finote-migrate --ignore-not-found
+
 echo "Run migration job"
 
 envsubst < backend/k8s/migrate-job.yaml | kubectl apply -f -

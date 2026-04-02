@@ -23,5 +23,4 @@ jobs:
           envs: GHCR_USER,GHCR_TOKEN
           script: |
             cd ~/finote/ops/backend
-            chmod +x scripts/redeploy_be_k8s.sh
-            ./scripts/redeploy_be_k8s.sh
+            ./deploy_be.sh
