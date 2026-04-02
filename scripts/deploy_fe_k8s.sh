@@ -19,6 +19,13 @@ echo "Apply Kubernetes manifests"
 envsubst < frontend/k8s/frontend-deployment.yaml | kubectl apply -f -
 kubectl apply -f frontend/k8s/frontend-service.yaml
 
+CHANGE="Deploy $FRONTEND_IMAGE commit $(git rev-parse --short HEAD)"
+
+echo "Annotate deployment revision"
+kubectl annotate deployment finote-frontend \
+  kubernetes.io/change-cause="$CHANGE" \
+  --overwrite
+
 echo "Wait rollout deployment"
 kubectl rollout status deployment/finote-frontend
 

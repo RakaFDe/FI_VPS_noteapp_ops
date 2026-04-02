@@ -33,6 +33,13 @@ envsubst < backend/k8s/postgres-migrate-job.yaml | kubectl apply -f -
 echo "Apply Backend deployment"
 envsubst < backend/k8s/backend-deployment.yaml | kubectl apply -f -
 
+CHANGE="Bootstrap deploy $BACKEND_IMAGE commit $(git rev-parse --short HEAD)"
+
+echo "Annotate deployment revision"
+kubectl annotate deployment finote-backend \
+  kubernetes.io/change-cause="$CHANGE" \
+  --overwrite
+
 echo "Apply Backend service"
 kubectl apply -f backend/k8s/backend-service.yaml
 

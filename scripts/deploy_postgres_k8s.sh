@@ -14,6 +14,12 @@ kubectl apply -f backend/k8s/postgres-secret.yaml
 kubectl apply -f backend/k8s/postgres-service.yaml
 kubectl apply -f backend/k8s/postgres-statefulset.yaml
 
+CHANGE="Postgres deploy commit $(git rev-parse --short HEAD)"
+
+kubectl annotate statefulset finote-postgres \
+  kubernetes.io/change-cause="$CHANGE" \
+  --overwrite
+
 echo "Waiting PostgreSQL ready..."
 kubectl rollout status statefulset/finote-postgres
 

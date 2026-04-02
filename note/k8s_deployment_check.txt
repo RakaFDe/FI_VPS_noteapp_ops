@@ -1,0 +1,3 @@
+
+jika ingin mengecek versi deployment rollout (commit git)
+kubectl rollout history deployment/finote-frontend
