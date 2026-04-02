@@ -22,6 +22,8 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           envs: GHCR_USER,GHCR_TOKEN
           script: |
-            cd ~/finote/ops/backend
+            cd ~/finote/ops/
+            git fetch origin
+            git reset --hard origin/main
             chmod +x scripts/redeploy_be_k8s.sh
             ./scripts/redeploy_be_k8s.sh
