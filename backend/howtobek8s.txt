@@ -1,0 +1,19 @@
+Dokumen ini berisi untuk petunjuk penggunaan shell script untuk deployment kubernetes backend
+
+berikut adalah rincian file script backend pada folder scripts OPS beserta kegunaannya
+
+deploy_be_k8s.sh
+file ini untuk menjalankan gabungan seperti postgres , job migrate , dan deploy backend.
+biasanya untuk awal initial atau jika ada perubahan secara yang cukup besar.
+hanya di sarankan untuk FIRST DEPLOY atau jika ada perubahan schema db besar, reset environment atau pertamakali deploy
+
+deploy_migration_k8s.sh
+file ini bertugas untuk menjalankan job migration untuk DB postgres Backend
+dalam script tersebut akan melakukan sync repo dan menghapus job migration yang pernah ada sebelumnya, sebelum melakukan job migration
+tersetting waktu timeout 120s / 2 menit
+
+deploy_postgres_k8s.sh
+sesuai namanya job ini akan menjalankan/mendeploy resource manifest postgres
+
+redeploy_be_k8s.sh
+untuk file ini hanya menjalankan redeploy bagian backend saja lebih ringan dan disarankan jika hanya ada perubahan kecil
