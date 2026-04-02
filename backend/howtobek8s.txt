@@ -17,3 +17,4 @@ sesuai namanya job ini akan menjalankan/mendeploy resource manifest postgres
 
 redeploy_be_k8s.sh
 untuk file ini hanya menjalankan redeploy bagian backend saja lebih ringan dan disarankan jika hanya ada perubahan kecil pada backend
+untuk git action backend menggunakan script berikut
