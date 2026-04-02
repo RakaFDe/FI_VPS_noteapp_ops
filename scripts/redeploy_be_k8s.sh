@@ -17,6 +17,13 @@ echo "Using image: $BACKEND_IMAGE"
 echo "Redeploy backend only"
 envsubst < backend/k8s/backend-deployment.yaml | kubectl apply -f -
 
+CHANGE="Deploy $BACKEND_IMAGE commit $(git rev-parse --short HEAD)"
+
+echo "Annotate deployment revision"
+kubectl annotate deployment finote-backend \
+  kubernetes.io/change-cause="$CHANGE" \
+  --overwrite
+
 echo "Wait rollout backend"
 kubectl rollout status deployment/finote-backend
 
