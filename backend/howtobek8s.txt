@@ -16,4 +16,4 @@ deploy_postgres_k8s.sh
 sesuai namanya job ini akan menjalankan/mendeploy resource manifest postgres
 
 redeploy_be_k8s.sh
-untuk file ini hanya menjalankan redeploy bagian backend saja lebih ringan dan disarankan jika hanya ada perubahan kecil
+untuk file ini hanya menjalankan redeploy bagian backend saja lebih ringan dan disarankan jika hanya ada perubahan kecil pada backend
