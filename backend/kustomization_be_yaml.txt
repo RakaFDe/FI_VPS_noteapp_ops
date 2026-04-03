@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - k8s/backend-configmap.yaml
+  - k8s/backend-secret.yaml
+  - k8s/postgres-secret.yaml
+  - k8s/postgres-pvc.yaml
+  - k8s/postgres-service.yaml
+  - k8s/postgres-statefulset.yaml
+  - k8s/backend-deployment.yaml
+  - k8s/backend-service.yaml
+
+images:
+  - name: finote-backend-image
+    newName: ghcr.io/rakafde/fi_vps_noteapp_be/finote-backend
+    newTag: 1.0.2-dev-2ab9003
