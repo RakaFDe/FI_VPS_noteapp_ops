@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: finote-frontend
-          image: ${FRONTEND_IMAGE}
+          image: finote-frontend-image
           ports:
             - containerPort: 8080
 
