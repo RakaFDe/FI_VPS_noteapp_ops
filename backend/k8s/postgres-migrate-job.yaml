@@ -9,7 +9,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: migrate
-          image: ${BACKEND_IMAGE}
+          image: finote-backend-image
           command: ["npx", "drizzle-kit", "migrate", "--config=drizzle.config.ts"]
 
           env:
