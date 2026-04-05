@@ -5,4 +5,4 @@ resources:
 images:
   - name: finote-frontend-image
     newName: ghcr.io/rakafde/fi_vps_noteapp_fe/finote-frontend
-    newTag: 1.0.1-baf7a8f
+    newTag: 1.0.1-454fe36
