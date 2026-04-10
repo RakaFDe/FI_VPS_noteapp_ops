@@ -15,7 +15,7 @@ echo "Wait Postgres ready"
 kubectl rollout status statefulset/finote-postgres --timeout=180s || true
 
 #echo "Run migration job"
-kubectl apply -f backend/k8s/migrate/
+kubectl apply -k backend/k8s/migrate/
 
 echo "Wait migration complete"
 kubectl wait --for=condition=complete job/finote-migrate --timeout=120s || true
