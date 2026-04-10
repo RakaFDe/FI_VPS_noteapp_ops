@@ -14,6 +14,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: finote-backend-service
+            name: finote-service
             port:
               number: 80
