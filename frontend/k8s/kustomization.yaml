@@ -1,6 +1,7 @@
 resources:
   - frontend-deployment.yaml
   - frontend-service.yaml
+  - forntend-ingress.yaml
 
 images:
   - name: finote-frontend-image
