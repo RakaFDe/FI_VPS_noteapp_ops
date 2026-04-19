@@ -26,7 +26,7 @@ spec:
 
           env:
             - name: DATABASE_URL
-              value: postgresql://finote_user:finote_password@postgres:5432/finote
+              value: postgresql://finote_user:finote_password_renew@postgres:5432/finote
             - name: SESSION_SECRET
               valueFrom:
                 secretKeyRef:
