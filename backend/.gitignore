@@ -1,1 +1,4 @@
+# Secrets
 .env
+*.env
+*secret*.yaml
