@@ -7,4 +7,4 @@ resources:
 images:
   - name: finote-backend-image
     newName: ghcr.io/rakafde/fi_vps_noteapp_be/finote-backend
-    newTag: 1.0.2-dev-2ad25f3
+    newTag: 1.0.2-dev-55426d4
