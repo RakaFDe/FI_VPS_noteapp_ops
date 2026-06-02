@@ -68,8 +68,8 @@ Backend Ingress (optional)
 Secret  / Configmap
 di .env kamu ada:
 
-POSTGRES_PASSWORD=finote_password
-SESSION_SECRET=super-secret-production
+POSTGRES_PASSWORD=<finote_password>
+SESSION_SECRET=<finote-secret>
 
 Ini sensitive, jangan taruh di ConfigMap.
 
