@@ -2,17 +2,19 @@
 
 ## Overview
 
-Repository ini berisi manifest Kubernetes untuk:
+Repository ini berisi manifest Kubernetes dan konfigurasi GitOps untuk FINOTE.
+
+Komponen yang dikelola:
 
 * PostgreSQL
-* Backend
+* Backend API
 * Frontend
 * Migration Job
 * Ingress
 
 Deployment aplikasi dikelola menggunakan ArgoCD.
 
-Secret tidak disimpan di repository.
+Secret tidak disimpan di repository dan harus direstore secara terpisah.
 
 ---
 
@@ -35,9 +37,29 @@ NGINX Bare Metal bertindak sebagai reverse proxy menuju service Kubernetes yang 
 
 ---
 
+# Repository Structure
+
+```text
+backend/
+├── k8s/
+│   ├── app/
+│   ├── migrate/
+│   └── postgres/
+
+frontend/
+├── k8s/
+
+scripts/
+├── archive/
+└── maintenance/
+    └── run-migration.sh
+```
+
+---
+
 # Disaster Recovery Procedure
 
-## 1. Prepare Server
+## 1. Prepare Kubernetes Cluster
 
 Install:
 
@@ -60,6 +82,8 @@ Verify cluster:
 kubectl get nodes
 ```
 
+All nodes should be Ready.
+
 ---
 
 ## 2. Install ArgoCD
@@ -73,8 +97,11 @@ kubectl create namespace argocd
 Install ArgoCD:
 
 ```bash
-kubectl apply -n argocd -f <argocd-install-manifest>
+kubectl apply --server-side \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
+
+If required, re-apply ArgoCD configuration used by this environment (server.insecure, ingress configuration, etc).
 
 Verify:
 
@@ -90,7 +117,7 @@ All pods should be Running.
 
 Secrets are not stored in Git.
 
-Create:
+Restore:
 
 * finote-postgres-secret
 * finote-backend-secret
@@ -102,15 +129,27 @@ kubectl apply -f postgres-secret.yaml
 kubectl apply -f backend-secret.yaml
 ```
 
+Verify:
+
+```bash
+kubectl get secret
+```
+
 ---
 
-## 4. Create ArgoCD Applications
+## 4. Configure ArgoCD Applications
 
-Register repository.
+Register Git repository.
 
-Create Application resources.
+Create or restore ArgoCD Application resources.
 
 Sync applications.
+
+Verify:
+
+```bash
+kubectl get applications -n argocd
+```
 
 ---
 
@@ -127,11 +166,19 @@ PostgreSQL must be Running.
 
 ## 6. Run Database Migration
 
+Migration dijalankan menggunakan maintenance script:
+
 ```bash
-kubectl apply -f backend/k8s/migrate/postgres-migrate-job.yaml
+./scripts/maintenance/run-migration.sh
 ```
 
-Wait until completed.
+Verify migration job:
+
+```bash
+kubectl get jobs
+```
+
+Migration must complete successfully.
 
 ---
 
@@ -141,6 +188,8 @@ Wait until completed.
 kubectl rollout status deployment/finote-backend
 ```
 
+Backend must be Available.
+
 ---
 
 ## 8. Verify Frontend
@@ -148,6 +197,29 @@ kubectl rollout status deployment/finote-backend
 ```bash
 kubectl rollout status deployment/finote-frontend
 ```
+
+Frontend must be Available.
+
+---
+
+## 9. Post Recovery Validation
+
+Validate:
+
+* Frontend accessible
+* Backend API accessible
+* Login works
+* Database connection works
+* Notes CRUD works
+
+---
+
+# Operational Notes
+
+* ArgoCD is the source of deployment truth.
+* Kubernetes Secrets are managed outside Git.
+* Legacy deployment scripts have been archived.
+* Migration is executed manually through maintenance scripts when required.
 
 ---
 
@@ -179,9 +251,11 @@ Planned additions:
 * NGINX Ingress Controller
 * cert-manager
 * TLS automation
-* External Secrets / Vault
+* Sealed Secrets / External Secrets
 * Monitoring Stack
-* GitOps Full Recovery
+* Ansible bootstrap automation
+* GitOps full recovery
+* Multi-node Kubernetes cluster
 
 ```
 ```
