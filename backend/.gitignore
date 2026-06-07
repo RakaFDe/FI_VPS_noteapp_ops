@@ -2,3 +2,6 @@
 .env
 *.env
 *secret*.yaml
+
+# Pengecualian untuk Sealed Secrets
+!*sealedsecret*.yaml
